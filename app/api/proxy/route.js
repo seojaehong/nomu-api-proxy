@@ -23,22 +23,31 @@ export async function GET(request) {
     const response = await fetch(apiUrl);
     const xmlText = await response.text();
     
-    const items = xmlText.match(/<item>([\s\S]*?)<\/item>/g) || [];
+    // 간단한 XML 파싱 방법으로 변경
+    const items = xmlText.match(/<item>[\s\S]*?<\/item>/g) || [];
     
     const parsedItems = items.map(item => {
-      const extract = (tag) => {
-        const match = item.match(new RegExp(`<${tag}><!\[CDATA\[([\s\S]*?)\]\]><\/${tag}>|<${tag}>([\s\S]*?)<\/${tag}>`, 'i'));
-        return match ? (match[1] || match[2] || '').trim() : '';
+      const extractTag = (tagName) => {
+        // CDATA 우선 시도
+        const cdataMatch = item.match(new RegExp(`<${tagName}><\\!\\[CDATA\\[([\\s\\S]*?)\\]\\]><\\/${tagName}>`, 'i'));
+        if (cdataMatch) return cdataMatch[1].trim();
+        
+        // 일반 태그 시도
+        const normalMatch = item.match(new RegExp(`<${tagName}>([\\s\\S]*?)<\\/${tagName}>`, 'i'));
+        if (normalMatch) return normalMatch[1].trim();
+        
+        return '';
       };
       
       return {
-        판례번호: extract('precedentNo'),
-        사건명: extract('caseName'),
-        법원명: extract('courtName'), 
-        선고일자: extract('judgmentDate'),
-        사건결과: extract('caseResult'),
-        사건유형: extract('kindA'),
-        질병구분: extract('kindB')
+        판례번호: extractTag('precedentNo'),
+        사건명: extractTag('caseName'),
+        법원명: extractTag('courtName'), 
+        선고일자: extractTag('judgmentDate'),
+        사건결과: extractTag('caseResult'),
+        사건유형: extractTag('kindA'),
+        질병구분: extractTag('kindB'),
+        내용: extractTag('caseContent')
       };
     });
     
