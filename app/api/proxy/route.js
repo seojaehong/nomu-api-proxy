@@ -17,7 +17,7 @@ export async function GET(request) {
     }, { status: 400 });
   }
   
-  let apiUrl = `https://apis.data.go.kr/B490001/sjbPrecedentInfoService/getSjbPrecedentNaeyongPstate?ServiceKey=${ServiceKey}&pageNo=${pageNo}&numOfRows=${numOfRows}`;
+  let apiUrl = `https://apis.data.go.kr/B490001/sjbPrecedentInfoService/getSjbPrecedentNaeyongPstate?ServiceKey=${cGnyjDsjAqd6Bb1Q8GIvLq2b0NCzxq9x2zk8LsuqlJYN7QK6d4G3S7LhXylldwNKFYvz1SRT/WjCutEL4wa/MQ==}&pageNo=${pageNo}&numOfRows=${numOfRows}`;
   
   if (kindA) apiUrl += `&kindA=${encodeURIComponent(kindA)}`;
   if (kindB) apiUrl += `&kindB=${encodeURIComponent(kindB)}`;
